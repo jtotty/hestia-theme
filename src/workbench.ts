@@ -24,11 +24,22 @@ const overrides: Record<string, ColorRef | null> = {
   descriptionForeground: ref('fgMuted'),
   'icon.foreground': ref('fgSubtle'),
   focusBorder: ref('accent', 0.6),
-  contrastBorder: ref('bgSunken'),
-  contrastActiveBorder: ref('accent'),
+  // Both contrast keys are deliberately unset. The schema calls them "an
+  // extra border around elements to separate them from others for greater
+  // contrast" - they exist for high-contrast accessibility themes and stack
+  // on top of every border already defined here. Setting them outlined every
+  // surface at once, which is the opposite of the recessive chrome this
+  // theme is for. Unset means no extra border, not a cool default leaking.
+  contrastBorder: null,
+  contrastActiveBorder: null,
   'widget.shadow': ref('bgSunken', 0.5),
   'widget.border': ref('bgSunken'),
-  'sash.hoverBorder': ref('accent'),
+  'sash.hoverBorder': ref('accent', 0.6),
+  // Matches window.inactiveBorder, so the window edge reads the same whether
+  // or not it has focus. At full accent this drew an orange line around the
+  // entire window. Not nulled: this key is outside the audited set of cool
+  // fallbacks, so matching the inactive edge is the safer way to hide it.
+  'window.activeBorder': ref('bgSunken'),
   'selection.background': ref('bgSelect'),
 
   // Text
@@ -98,14 +109,27 @@ const overrides: Record<string, ColorRef | null> = {
 
   // The nine keys whose VSCode defaults are cool
   'activityBar.activeBorder': ref('accent'),
-  'tab.activeBorderTop': ref('accent'),
-  'statusBar.focusBorder': ref('accent'),
-  'statusBarItem.focusBorder': ref('accent'),
+  // Kept set, but painted the same colour as the active tab so it does not
+  // render. An active tab bordered both top (this) and bottom
+  // (tab.activeBorder) reads as a bracket and is too loud; the bottom edge
+  // alone is enough to locate it. This cannot be null: it is one of the nine
+  // keys whose VSCode fallback is a cool blue, so nulling it would trade an
+  // orange line for a blue one.
+  'tab.activeBorderTop': ref('bgSelect'),
+  // One of the two accents kept at full strength, alongside
+  // activityBar.activeBorder. The generic ActiveBorder rule now dims to 0.6,
+  // so this has to be pinned or the active tab loses its only marker.
+  'tab.activeBorder': ref('accent'),
+  'statusBar.focusBorder': ref('accent', 0.6),
+  'statusBarItem.focusBorder': ref('accent', 0.6),
   'statusBarItem.remoteBackground': ref('accent'),
   'statusBarItem.remoteForeground': ref('bg'),
-  'terminal.tab.activeBorder': ref('accent'),
+  // Dimmed to match the generic ActiveBorder rule. Both must stay set rather
+  // than be nulled, because they are two of the nine keys whose VSCode
+  // fallback is cool, but neither needs full accent to read as active.
+  'terminal.tab.activeBorder': ref('accent', 0.6),
   'welcomePage.progress.foreground': ref('accent'),
-  'inputOption.activeBorder': ref('accent'),
+  'inputOption.activeBorder': ref('accent', 0.6),
   'actionBar.toggledBackground': ref('bgSelect'),
 
   // Chrome surfaces pinned so the hierarchy is explicit rather than incidental
@@ -521,7 +545,7 @@ const rules: ReadonlyArray<readonly [RegExp, ColorRef | null]> = [
   [/^diffEditor\.inserted/, ref('success', 0.12)],
   // A moved block and the moved block you are looking at are different
   // things; the accent marks the active one.
-  [/^diffEditor\.moveActive\./, ref('accent')],
+  [/^diffEditor\.moveActive\./, ref('accent', 0.6)],
   [/^diffEditor\./, ref('bgSelect', 0.3)],
   // Merge stacks the same way: the header band is the conflict's visual
   // anchor and has to read above the content band it introduces, so each
@@ -619,16 +643,25 @@ const rules: ReadonlyArray<readonly [RegExp, ColorRef | null]> = [
   [/[Hh]overBackground$/, ref('bgSelect', 0.5)],
   [/[Hh]overForeground$/, ref('fgBright')],
   [/[Ff]ocusBackground$/, ref('bgSelect', 0.6)],
-  [/[Ff]ocusOutline$/, ref('accent')],
+  // Dimmed with the rest of the accent borders. This one follows the cursor
+  // down the explorer tree, so at full strength it was the most persistently
+  // distracting outline in the theme.
+  [/[Ff]ocusOutline$/, ref('accent', 0.6)],
 
   // Interactive-cell code border: not caught by any generic Border rule
   // (it ends "...CodeBorder", not "...ctiveBorder"), so without this pair
   // both states fell through to the same bottom-of-list generic Border rule.
   [/[Ii]nactiveCodeBorder$/, ref('bgSunken')],
-  [/[Aa]ctiveCodeBorder$/, ref('accent')],
+  [/[Aa]ctiveCodeBorder$/, ref('accent', 0.6)],
 
   [/[Ii]nactiveBorder$/, ref('bgSunken')],
-  [/[Aa]ctiveBorder$/, ref('accent')],
+  // Dimmed from full accent. This one pattern paints every "...ActiveBorder"
+  // key, so at full strength around twenty surfaces all outlined themselves
+  // in the brightest colour in the palette at once and competed with each
+  // other. At 0.6 they still mark active state without shouting. The two
+  // that genuinely aid orientation, tab.activeBorder and
+  // activityBar.activeBorder, are pinned to full accent in the overrides.
+  [/[Aa]ctiveBorder$/, ref('accent', 0.6)],
   [/[Ii]nactiveForeground$/, ref('fgMuted')],
   [/[Aa]ctiveForeground$/, ref('fgBright')],
   [/[Ii]nactiveBackground$/, ref('bgRaised')],
@@ -717,7 +750,7 @@ const rules: ReadonlyArray<readonly [RegExp, ColorRef | null]> = [
   [/[Bb]order([A-Z][a-z]+)?$/, ref('bgSunken')],
   [/[Ss]hadow$/, ref('bgSunken', 0.5)],
   [/[Hh]ighlight$/, ref('accent', 0.2)],
-  [/[Oo]utline$/, ref('accent')],
+  [/[Oo]utline$/, ref('accent', 0.6)],
   [/[Bb]ackground$/, ref('bgRaised')],
   // fgSubtle, not fg. Anything reaching this rule is unclassified chrome
   // text, and in a theme whose whole point is calm it should not be painted

@@ -27,6 +27,14 @@ const TRANSPARENT: readonly string[] = [
   // rendered in the minimap. For example, '#000000c0' will render the
   // elements with 75% opacity."
   'minimap.foregroundOpacity',
+  // The schema describes these as "an extra border around elements" and "an
+  // extra border around active elements" for "greater contrast". They are a
+  // high-contrast-theme mechanism, and they stack on top of every border
+  // this theme already sets, outlining every surface at once. Unlike the
+  // cool-fallback keys, leaving these unset draws nothing at all rather than
+  // exposing a VSCode default, so unset is the correct value and not a gap.
+  'contrastBorder',
+  'contrastActiveBorder',
 ]
 
 describe('the generated theme', () => {
@@ -164,6 +172,18 @@ describe('nothing is painted invisible', () => {
     expect(invisible).toEqual([])
   })
 
+  // The window edge is meant to be invisible in both focus states, so this
+  // one pair is identical on purpose. An accent-coloured window.activeBorder
+  // drew a bright line around the whole application, and focus is already
+  // legible from the title bar and the active editor group. Neither key can
+  // simply be unset: the vendored schema records no default for them, so
+  // what VSCode falls back to here is unverified, and the theme's whole
+  // premise is that an unset key is a cool default waiting to leak.
+  const UNIFORM_ON_PURPOSE: ReadonlyArray<readonly [string, string]> = [
+    ['window.inactiveBorder', 'window.activeBorder'],
+  ]
+  const uniformLabels = UNIFORM_ON_PURPOSE.map(([a, b]) => `${a} == ${b}`)
+
   it('distinguishes an inactive state from its active counterpart', () => {
     const collisions: string[] = []
     for (const key of Object.keys(theme.colors)) {
@@ -175,7 +195,15 @@ describe('nothing is painted invisible', () => {
         }
       }
     }
-    expect(collisions).toEqual([])
+    expect(collisions.filter((c) => !uniformLabels.includes(c))).toEqual([])
+  })
+
+  it('still flags the exempted pair, so the exemption cannot rot silently', () => {
+    // If a later change gives the window edge two distinct colours, this
+    // fails and the exemption above should be deleted rather than kept.
+    for (const [a, b] of UNIFORM_ON_PURPOSE) {
+      expect(theme.colors[a], `${a} == ${b}`).toBe(theme.colors[b])
+    }
   })
 
   // The twin of the inactive/active guard above. VSCode uses a second axis for
