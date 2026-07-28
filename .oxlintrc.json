@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "import"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "no-dupe-class-members": "error",
+    "no-redeclare": "off",
+    "no-use-before-define": "off",
+    "no-useless-constructor": "off",
+    "no-unused-expressions": "error",
+
+    "import/no-named-as-default": "error",
+    "import/no-named-as-default-member": "warn",
+
+    "typescript/ban-ts-comment": "error",
+    "typescript/consistent-type-definitions": ["error", "interface"],
+    "typescript/consistent-type-imports": "error",
+    "typescript/no-dupe-class-members": "error",
+    "typescript/no-empty-object-type": ["error", { "allowInterfaces": "always" }],
+    "typescript/no-explicit-any": "off",
+    "typescript/no-import-type-side-effects": "error",
+    "typescript/no-non-null-assertion": "off",
+    "typescript/no-require-imports": "error",
+    "typescript/no-wrapper-object-types": "error"
+  }
+}

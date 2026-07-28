@@ -1,0 +1,12 @@
+src/
+test/
+scripts/
+schema/
+docs/
+.superpowers/
+.github/
+node_modules/
+tsconfig.json
+vitest.config.ts
+.oxlintrc.json
+.gitignore
