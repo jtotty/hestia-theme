@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises'
-import { blend } from './color'
+import { blend, hexToOklch, oklchToHex } from './color'
 import { resolveRole } from './palette'
 import { colorKeys } from './schema'
 import { semanticRules } from './semantic'
@@ -24,6 +24,17 @@ export interface ThemeJson {
 
 function resolveRef(value: ColorRef, variant: Variant): string {
   const base = resolveRole(value.role, variant)
+  if (value.tint !== undefined) {
+    if (value.alpha !== undefined) {
+      throw new Error(`A ColorRef cannot set both alpha and tint (role "${value.role}").`)
+    }
+    const surface = hexToOklch(resolveRole(value.on ?? 'bg', variant))
+    return oklchToHex({
+      l: surface.l + value.tint.lightness,
+      c: value.tint.chroma,
+      h: hexToOklch(base).h,
+    })
+  }
   if (value.alpha === undefined) return base
   return blend(base, resolveRole(value.on ?? 'bg', variant), value.alpha)
 }

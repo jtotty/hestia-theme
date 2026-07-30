@@ -4,6 +4,65 @@ const ref = (role: RoleName, alpha?: number, on?: RoleName): ColorRef =>
   alpha === undefined ? { role } : on === undefined ? { role, alpha } : { role, alpha, on }
 
 /**
+ * A change-signalling background: `role`'s hue at a lightness pinned near the
+ * editor background, so code sitting on top stays as readable as it was on
+ * the plain background.
+ *
+ * Use this for every "this region changed" fill. The alternative, `ref(role,
+ * alpha)`, cannot work here: see the Tint docs in types.ts for why no alpha
+ * value is both readable and visible for the success green.
+ *
+ * Lightness deltas are deliberately small and the two levels differ mostly in
+ * chroma, not lightness - a more saturated word-level fill reads as stronger
+ * without costing any contrast. Above roughly 0.07 chroma the greens clip to
+ * the sRGB gamut and stop getting more saturated, so LINE and WORD are set
+ * either side of that.
+ */
+const tint = (role: RoleName, lightness: number, chroma: number): ColorRef => ({
+  role,
+  tint: { lightness, chroma },
+})
+
+/** Whole changed line or region: present, but never competing with the code. */
+const TINT_LINE = [0.04, 0.04] as const
+/**
+ * The exact changed characters inside such a line.
+ *
+ * Lightness is 0.06 rather than 0.07 because the jade hue is the greenest of
+ * the roles this is applied to, and at 0.07 it landed at 4.45:1 - just under
+ * AA. At 0.06 the worst case across every hue used here is 4.61:1.
+ */
+const TINT_WORD = [0.06, 0.07] as const
+/**
+ * The outline VSCode draws around the changed characters.
+ *
+ * Darker than the fill it surrounds rather than brighter. It has to differ
+ * from the fill or it does not render at all, but the previous value was the
+ * role at 0.55 alpha, which put a bright edge around every changed word. A
+ * recessed edge defines the same boundary without adding a second bright line.
+ */
+const TINT_EDGE = [0.03, 0.07] as const
+/**
+ * The diff margin: the line-number column beside a changed line.
+ *
+ * Marginally stronger than the line wash, so a changed line and its number
+ * read as one continuous band rather than a bright column bolted onto a
+ * subtle wash. It used to be the full role, and `success` and `error` are
+ * light saturated colours - a full-height column of either was the brightest
+ * thing on screen.
+ *
+ * Line numbers *are* drawn on this, so it is contrast-constrained after all,
+ * and awkwardly: editorLineNumber.foreground is fgFaint at OKLCH lightness
+ * 0.447, above the background's 0.207. Lightening the margin therefore moves
+ * it toward the very colour drawn on it. No visible tint reaches the 2.37:1
+ * that line numbers get on the plain gutter; the faintest one caps at 2.12.
+ * At 0.07 they sit near 2.0, and the active line number - the one you
+ * actually look for - improves from 1.36 to 10.07, because full-strength
+ * success was so light it nearly erased it.
+ */
+const TINT_MARGIN = [0.07, 0.09] as const
+
+/**
  * Matches a semantic word appearing as a segment of a colour key.
  *
  * Case-insensitive because VSCode is inconsistent about placement and casing:
@@ -336,9 +395,22 @@ const overrides: Record<string, ColorRef | null> = {
   // treatment (merge.currentContentBackground / incomingContentBackground)
   // above so the two sides of a merge - and the generic "changed" highlight
   // inside either - are visually distinguishable from one another.
-  'mergeEditor.conflict.input1.background': ref('info', 0.2),
-  'mergeEditor.conflict.input2.background': ref('accent', 0.2),
-  'mergeEditor.change.background': ref('modified', 0.15),
+  'mergeEditor.conflict.input1.background': tint('info', ...TINT_LINE),
+  'mergeEditor.conflict.input2.background': tint('accent', ...TINT_LINE),
+  'mergeEditor.change.background': tint('modified', ...TINT_LINE),
+  // Was claimed by the generic word('deleted','removed','conflicting') rule,
+  // which resolves to full-strength error. That rule is right for gutter
+  // icons and decorations but this key is a background: the result was code
+  // printed on the same colour as itself, at 1.00:1, invisible rather than
+  // merely low contrast.
+  'mergeEditor.conflictingLines.background': tint('error', ...TINT_LINE),
+  // Both fell through to the generic word('added'|'inserted') and
+  // word('deleted'|'removed') rules, which resolve to the full role. That is
+  // right for the icons and decorations those rules exist for, but these two
+  // fill the whole line-number column beside every changed line, and at full
+  // strength that column was brighter than the code it annotates.
+  'diffEditorGutter.insertedLineBackground': tint('success', ...TINT_MARGIN),
+  'diffEditorGutter.removedLineBackground': tint('error', ...TINT_MARGIN),
 
   // Test explorer status icons. The word-rule family only accidentally
   // caught "iconErrored" (via the "error" word); the rest fell through to
@@ -520,9 +592,14 @@ const overrides: Record<string, ColorRef | null> = {
   // changeBase.* had collapsed to one value. The base pane shows the common
   // ancestor rather than either side of the merge, so it takes a neutral
   // wash instead of joining the input1/input2 hue pair.
-  'mergeEditor.change.word.background': ref('modified', 0.35),
-  'mergeEditor.changeBase.background': ref('bgSelect', 0.4),
-  'mergeEditor.changeBase.word.background': ref('bgSelect', 0.8),
+  'mergeEditor.change.word.background': tint('modified', ...TINT_WORD),
+  // The base pane is deliberately neutral rather than hued, so these two stay
+  // alpha composites of a surface role. Alpha is workable here precisely
+  // because bgSelect is a dark warm neutral, not a bright accent - but only
+  // just: above 0.5 the word fill drops below AA, which is where it used to
+  // sit at 0.8 (4.08:1).
+  'mergeEditor.changeBase.background': ref('bgSelect', 0.35),
+  'mergeEditor.changeBase.word.background': ref('bgSelect', 0.5),
 }
 
 /** Ordered fallback rules. First match wins. Later entries are broader. */
@@ -537,12 +614,19 @@ const rules: ReadonlyArray<readonly [RegExp, ColorRef | null]> = [
   // around that ("...TextBorder"). One alpha for the whole family collapsed
   // all three, so intra-line diff highlighting did not render at all. Three
   // ascending alphas of the same hue, most specific pattern first.
-  [/^diffEditor\.removedTextBorder$/, ref('error', 0.55)],
-  [/^diffEditor\.removedText/, ref('error', 0.28)],
-  [/^diffEditor\.removed/, ref('error', 0.12)],
-  [/^diffEditor\.insertedTextBorder$/, ref('success', 0.55)],
-  [/^diffEditor\.insertedText/, ref('success', 0.28)],
-  [/^diffEditor\.inserted/, ref('success', 0.12)],
+  // Tints, not alpha composites. These fills sit directly under code, and at
+  // the alphas they used to carry (0.28 word, 0.12 line) four syntax colours
+  // dropped below AA on the inserted fill and comments fell to 1.29:1.
+  //
+  // Three stacked levels, ordered most specific first: the outline around the
+  // changed characters, the fill behind those characters, then the wash across
+  // the whole changed line.
+  [/^diffEditor\.removedTextBorder$/, tint('error', ...TINT_EDGE)],
+  [/^diffEditor\.removedText/, tint('error', ...TINT_WORD)],
+  [/^diffEditor\.removed/, tint('error', ...TINT_LINE)],
+  [/^diffEditor\.insertedTextBorder$/, tint('success', ...TINT_EDGE)],
+  [/^diffEditor\.insertedText/, tint('success', ...TINT_WORD)],
+  [/^diffEditor\.inserted/, tint('success', ...TINT_LINE)],
   // A moved block and the moved block you are looking at are different
   // things; the accent marks the active one.
   [/^diffEditor\.moveActive\./, ref('accent', 0.6)],
@@ -550,11 +634,15 @@ const rules: ReadonlyArray<readonly [RegExp, ColorRef | null]> = [
   // Merge stacks the same way: the header band is the conflict's visual
   // anchor and has to read above the content band it introduces, so each
   // side's header takes double the content alpha of the same hue.
-  [/^merge\.currentHeader/, ref('info', 0.4)],
-  [/^merge\.current/, ref('info', 0.2)],
-  [/^merge\.incomingHeader/, ref('accent', 0.4)],
-  [/^merge\.incoming/, ref('accent', 0.2)],
-  [/^merge\.commonHeader/, ref('bgSelect', 0.6)],
+  // Header bands take the word-level tint and content the line-level one, so
+  // the header still reads as the louder of the pair. Both are hue-carrying
+  // tints for the same reason as the diff fills: at the alphas these used to
+  // carry, the two header bands sat at 2.33:1 and 2.68:1.
+  [/^merge\.currentHeader/, tint('info', ...TINT_WORD)],
+  [/^merge\.current/, tint('info', ...TINT_LINE)],
+  [/^merge\.incomingHeader/, tint('accent', ...TINT_WORD)],
+  [/^merge\.incoming/, tint('accent', ...TINT_LINE)],
+  [/^merge\.commonHeader/, ref('bgSelect', 0.5)],
   [/^merge\./, ref('bgSelect', 0.3)],
 
   // Status semantics, before the generic family rules
