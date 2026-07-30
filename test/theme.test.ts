@@ -452,6 +452,81 @@ describe('legibility', () => {
   it('makes the cursor stand out against the editor', () => {
     expect(contrastRatio(theme.colors['editorCursor.foreground']!, bg())).toBeGreaterThan(4.5)
   })
+
+  /*
+   * Diff and merge fills are the one place code is routinely read on
+   * something other than the editor background, so holding syntax colours to
+   * AA against `editor.background` alone does not prove a diff is readable.
+   *
+   * This is what regressed: composited at alpha, the inserted word fill put
+   * four syntax colours below AA and the merge conflict fill resolved to
+   * full-strength error, printing code at 1.00:1 on its own colour. Comments
+   * are exempt on the same grounds as above.
+   */
+  it('keeps code readable on every diff and merge fill', () => {
+    const comment = resolveRole('fgFaint', 'dark')
+    const content = [
+      ...theme.tokenColors.map((r) => r.settings.foreground),
+      ...Object.values(theme.semanticTokenColors),
+    ].filter((c) => c !== comment)
+    expect(content.length).toBeGreaterThan(0)
+
+    // Gutter and overview-ruler keys are excluded on purpose. They are solid
+    // change bars in the margin with no code on top of them, so they are free
+    // to use the role at full strength, and diffEditorGutter.* deliberately
+    // does. Only fills that sit under text are held to AA here.
+    const fills = Object.keys(theme.colors).filter(
+      (k) =>
+        /[Bb]ackground$/.test(k) &&
+        /^(diffEditor|merge)/.test(k) &&
+        !/Gutter|Overview|[Mm]inimap/.test(k),
+    )
+    expect(fills.length).toBeGreaterThan(10)
+
+    for (const key of fills) {
+      const fill = theme.colors[key]!
+      const worst = Math.min(...content.map((c) => contrastRatio(c, fill)))
+      expect(worst, `${key} (${fill})`).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+
+  /*
+   * The diff margin is the line-number column beside a changed line, and line
+   * numbers are drawn on it, so it cannot be treated as decoration.
+   *
+   * It used to be the full success/error role. Those are light saturated
+   * colours, and editorLineNumber.activeForeground is a near-white, so the
+   * active line number - the one you look for when reading a diff - sat at
+   * 1.36:1 on an inserted line and was effectively erased.
+   */
+  it.each(['diffEditorGutter.insertedLineBackground', 'diffEditorGutter.removedLineBackground'])(
+    'keeps the active line number legible on %s',
+    (key) => {
+      const margin = theme.colors[key]!
+      const active = theme.colors['editorLineNumber.activeForeground']!
+      expect(contrastRatio(active, margin)).toBeGreaterThanOrEqual(4.5)
+    },
+  )
+
+  it.each(['diffEditorGutter.insertedLineBackground', 'diffEditorGutter.removedLineBackground'])(
+    'keeps %s from returning to full role strength',
+    (key) => {
+      // The full roles sit at 9.08 and 5.53 against the editor background. A
+      // margin that bright dominates the code it annotates. This is a
+      // brightness ceiling, not a contrast requirement.
+      expect(contrastRatio(theme.colors[key]!, bg())).toBeLessThan(2)
+    },
+  )
+
+  it('keeps a changed line distinguishable from the code around it', () => {
+    // The twin of the test above. Readability is bought by keeping these
+    // fills close to the background in lightness, so it is possible to
+    // overshoot and make a diff invisible. Anything at 1.05 or below reads as
+    // no highlight at all.
+    for (const key of ['diffEditor.insertedLineBackground', 'diffEditor.removedLineBackground']) {
+      expect(contrastRatio(theme.colors[key]!, bg()), key).toBeGreaterThan(1.05)
+    }
+  })
 })
 
 describe('build reproducibility', () => {
