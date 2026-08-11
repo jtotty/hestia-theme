@@ -7184,6 +7184,1386 @@
           "body": "${1:#ff0000}"
         }
       ]
+    },
+    "activityBarTop.activeBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "activityBarTop.activeBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "activityBarTop.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "activityBarTop.dropBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "activityBarTop.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "activityBarTop.inactiveForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "activityErrorBadge.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "activityErrorBadge.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "activityWarningBadge.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "activityWarningBadge.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "chart.axis": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "chart.guide": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "chart.line": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "commandCenter.debuggingBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "debugTokenExpression.type": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "diffEditor.unchangedRegionShadow": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editor.compositionBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editor.findMatchForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editor.findMatchHighlightForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editor.foldPlaceholderForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editor.placeholder.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorActionList.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorActionList.focusBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorActionList.focusForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorActionList.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorCommentsWidget.replyInputBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorGutter.itemBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorGutter.itemGlyphForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorLightBulbAi.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorMultiCursor.primary.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorMultiCursor.primary.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorMultiCursor.secondary.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorMultiCursor.secondary.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorStickyScroll.border": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorStickyScroll.shadow": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "editorWatermark.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "extensionIcon.privateForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.primaryBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.primaryBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.primaryForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.secondaryBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.secondaryBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.secondaryForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.successfulBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.successfulBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.gutterIndicator.successfulForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.modifiedBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.modifiedBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.modifiedChangedLineBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.modifiedChangedTextBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.originalBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.originalBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.originalChangedLineBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.originalChangedTextBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.tabWillAcceptModifiedBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "inlineEdit.tabWillAcceptOriginalBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "list.dropBetweenBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "minimap.infoHighlight": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "multiDiffEditor.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "multiDiffEditor.border": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "multiDiffEditor.headerBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "outputView.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "outputViewStickyScroll.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "panelStickyScroll.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "panelStickyScroll.border": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "panelStickyScroll.shadow": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "panelTitle.border": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "panelTitleBadge.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "panelTitleBadge.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "profiles.sashBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "radio.activeBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "radio.activeBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "radio.activeForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "radio.inactiveBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "radio.inactiveBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "radio.inactiveForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "radio.inactiveHoverBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.foreground1": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.foreground2": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.foreground3": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.foreground4": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.foreground5": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.historyItemBaseRefColor": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.historyItemHoverAdditionsForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.historyItemHoverDefaultLabelBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.historyItemHoverDefaultLabelForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.historyItemHoverDeletionsForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.historyItemHoverLabelForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.historyItemRefColor": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "scmGraph.historyItemRemoteRefColor": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "sideBarActivityBarTop.border": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "sideBarStickyScroll.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "sideBarStickyScroll.border": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "sideBarStickyScroll.shadow": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "sideBarTitle.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "sideBarTitle.border": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "tab.dragAndDropBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "tab.selectedBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "tab.selectedBorderTop": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "tab.selectedForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "tab.worktreeBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminal.initialHintForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalCommandGuide.foreground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalOverviewRuler.border": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalStickyScroll.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalStickyScroll.border": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalStickyScrollHover.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalSymbolIcon.aliasForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalSymbolIcon.argumentForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalSymbolIcon.fileForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalSymbolIcon.flagForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalSymbolIcon.folderForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalSymbolIcon.inlineSuggestionForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalSymbolIcon.methodForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalSymbolIcon.optionForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "terminalSymbolIcon.optionValueForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.coverCountBadgeBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.coverCountBadgeForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.coveredBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.coveredBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.coveredGutterBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.iconErrored.retired": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.iconFailed.retired": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.iconPassed.retired": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.iconQueued.retired": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.iconSkipped.retired": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.iconUnset.retired": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.message.error.badgeBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.message.error.badgeBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.message.error.badgeForeground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.messagePeekBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.messagePeekHeaderBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.uncoveredBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.uncoveredBorder": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.uncoveredBranchBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "testing.uncoveredGutterBackground": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
+    },
+    "textPreformat.background": {
+      "type": "string",
+      "description": "Registered by Cursor but absent from the mirror schema.",
+      "format": "color-hex",
+      "defaultSnippets": [
+        {
+          "body": "${1:#ff0000}"
+        }
+      ]
     }
   }
 }

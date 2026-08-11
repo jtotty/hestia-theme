@@ -40,15 +40,28 @@ The integrated terminal is meant to match Ghostty exactly, with no separate term
 
 ## Coverage
 
-The theme sets all 718 workbench colour keys listed in the vendored schema snapshot at `schema/workbench-colors.json`, except 4 deliberately left unset.
-Those 4 are `button.border`, `editor.lineHighlightBorder`, `editorUnnecessaryCode.opacity` and `minimap.foregroundOpacity`.
-The last two are alpha-only keys VS Code reads the alpha channel from, so setting them opaque would disable the effect they exist for.
+The theme sets all 856 workbench colour keys listed in the vendored schema snapshot at `schema/workbench-colors.json`, except 6 deliberately left unset.
+Those 6 are `contrastBorder`, `contrastActiveBorder`, `button.border`, `editor.lineHighlightBorder`, `editorUnnecessaryCode.opacity` and `minimap.foregroundOpacity`.
+The two contrast keys exist for high-contrast accessibility themes and stack an extra border on top of every border already defined, which is the opposite of this theme's recessive chrome.
+The two opacity keys are alpha-only keys VS Code reads the alpha channel from, so setting them opaque would disable the effect they exist for.
 
-That snapshot is not the same thing as the set of keys VS Code recognises today.
-It comes from an unofficial third-party mirror that lags upstream, so keys added to VS Code after it was taken are not covered.
-`textPreformat.border`, `editorGutter.itemBackground` and every `multiDiffEditor.*` key are absent from it and fall back to VS Code's own defaults.
-The whole `chat.*` surface is represented by three keys, which is well short of what current VS Code and Cursor define.
-Within the snapshot, setting every key means no cool VS Code defaults leak through; outside it, they can.
+The snapshot is built by `npm run vendor-schema` from two sources, because neither is complete on its own.
+The base is an unofficial third-party mirror of the schema VS Code ships (718 keys).
+It carries the real upstream descriptions, but it is maintained by hand and lags upstream, so anything added since its last refresh is absent.
+On top of that, the script reads the colour registry straight out of the installed editor's `workbench.desktop.main.js` - Cursor first, then VS Code - which is the authoritative set of keys that editor will honour, and merges in the 138 keys the mirror was missing.
+
+The bundle is minified, so the registrar function cannot be matched by name.
+The script matches call shape instead and picks the identifier whose dotted-string arguments overlap the mirror's key list most.
+If the winner accounts for less than 85% of the mirror's keys the call shape has drifted, and the script throws rather than quietly vendoring a truncated list.
+Mirror keys the extraction does not confirm are kept, not dropped: the extraction is a lower bound, and setting a key the editor ignores costs nothing while unsetting one it honours does not.
+
+`vendor-schema` needs a local Cursor or VS Code install, so it is a manual step and never runs in CI.
+The CI-side guard is a floor on the vendored key count in `test/schema.test.ts`.
+
+Coverage is still not the whole of what the editor draws.
+`textPreformat.border` appears in neither source, and the whole `chat.*` surface is represented by three keys, which is well short of what Cursor's chat UI renders.
+Whether those gaps are keys the editor really lacks or keys the extraction misses is unconfirmed.
+Within the snapshot, setting every key means no cool editor defaults leak through; outside it, they can.
 That is worth knowing in Cursor in particular, where the chat surface is a primary one.
 
 The build is deterministic.

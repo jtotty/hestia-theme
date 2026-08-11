@@ -260,7 +260,17 @@ describe('nothing is painted invisible', () => {
 })
 
 describe('related keys stay distinguishable from one another', () => {
-  it.each(['symbolIcon.', 'debugIcon.', 'editorOverviewRuler.'])(
+  it.each([
+    'symbolIcon.',
+    'debugIcon.',
+    'editorOverviewRuler.',
+    // Three families the mirror schema never listed. Left to the generic
+    // rules, all nine terminalSymbolIcon keys painted one neutral and the
+    // graph swimlanes were indistinguishable from one another.
+    'terminalSymbolIcon.',
+    'scmGraph.foreground',
+    'inlineEdit.gutterIndicator.',
+  ])(
     'does not collapse the %s family to a single colour',
     (prefix) => {
       const values = Object.entries(theme.colors)
@@ -288,6 +298,19 @@ describe('related keys stay distinguishable from one another', () => {
     // "....word.background" highlight of the changed words inside it.
     ['mergeEditor.change.word.background', 'mergeEditor.change.background'],
     ['mergeEditor.changeBase.word.background', 'mergeEditor.changeBase.background'],
+    // Inline edit is the same stacked pair under Cursor's own key names, and
+    // the two sides of it must not read alike either.
+    ['inlineEdit.modifiedChangedTextBackground', 'inlineEdit.modifiedChangedLineBackground'],
+    ['inlineEdit.originalChangedTextBackground', 'inlineEdit.originalChangedLineBackground'],
+    ['inlineEdit.modifiedBackground', 'inlineEdit.originalBackground'],
+    ['inlineEdit.tabWillAcceptModifiedBorder', 'inlineEdit.modifiedBorder'],
+    ['inlineEdit.tabWillAcceptOriginalBorder', 'inlineEdit.originalBorder'],
+    // Coverage: covered, uncovered and partially-covered are three verdicts,
+    // and a gutter mark has to differ from the line wash it accompanies.
+    ['testing.coveredBackground', 'testing.uncoveredBackground'],
+    ['testing.uncoveredBranchBackground', 'testing.uncoveredBackground'],
+    ['testing.coveredGutterBackground', 'testing.coveredBackground'],
+    ['testing.uncoveredGutterBackground', 'testing.uncoveredBackground'],
   ])('paints %s differently from %s', (a, b) => {
     expect(theme.colors[a]).toBeDefined()
     expect(theme.colors[b]).toBeDefined()
