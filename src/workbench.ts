@@ -23,6 +23,35 @@ const tint = (role: RoleName, lightness: number, chroma: number): ColorRef => ({
   tint: { lightness, chroma },
 })
 
+/**
+ * A colour that keeps its transparency to runtime, for the keys that paint
+ * over content rather than over a surface.
+ *
+ * `ref(role, alpha)` cannot serve these. It composites at build time against
+ * one nominated surface and emits an opaque colour, so wherever the key
+ * actually paints over something else - the overview ruler's diff and
+ * diagnostic marks, the minimap's rendered code - it covers it completely
+ * instead of veiling it. That is the whole defect the scrollbar and minimap
+ * thumbs had: they hid the red and green change marks they were sliding over.
+ */
+const translucent = (role: RoleName, opacity: number): ColorRef => ({ role, opacity })
+
+/**
+ * The scrollbar, minimap and notebook-scrollbar thumbs.
+ *
+ * `fgSubtle`, a light neutral, rather than the dark `fgFaint` these carried
+ * while they were opaque. A dark thumb over the overview ruler reads as a
+ * hole punched in the marks; a light one at low opacity reads as a lens laid
+ * over them, and the marks keep their hue through it.
+ *
+ * The base opacity is 0.1 because `fgSubtle` at 0.1 over the editor
+ * background lands within one step of the opaque `fgFaint` at 0.3 it
+ * replaces, so the thumb is exactly as findable as before on plain
+ * background while no longer occluding anything. Hover and active ascend
+ * from there.
+ */
+const SLIDER = { base: 0.1, hover: 0.18, active: 0.26 } as const
+
 /** Whole changed line or region: present, but never competing with the code. */
 const TINT_LINE = [0.04, 0.04] as const
 /**
@@ -221,16 +250,19 @@ const overrides: Record<string, ColorRef | null> = {
 
   // Scrollbar
   'scrollbar.shadow': ref('bgSunken', 0.5),
-  'scrollbarSlider.background': ref('fgFaint', 0.3),
-  'scrollbarSlider.hoverBackground': ref('fgFaint', 0.5),
-  'scrollbarSlider.activeBackground': ref('fgFaint', 0.7),
+  // Translucent, not composited: the editor's vertical scrollbar shares its
+  // column with the overview ruler, so an opaque thumb hides the diff and
+  // diagnostic marks in the stretch of file it covers. See SLIDER above.
+  'scrollbarSlider.background': translucent('fgSubtle', SLIDER.base),
+  'scrollbarSlider.hoverBackground': translucent('fgSubtle', SLIDER.hover),
+  'scrollbarSlider.activeBackground': translucent('fgSubtle', SLIDER.active),
   // The third slider family. Without these the base state fell through to the
   // generic Background rule and resolved to bgRaised - exactly
   // notebook.editorBackground, so the notebook's own scrollbar had no thumb.
-  // Same role and ascending alphas as the two sibling families above.
-  'notebookScrollbarSlider.background': ref('fgFaint', 0.3),
-  'notebookScrollbarSlider.hoverBackground': ref('fgFaint', 0.5),
-  'notebookScrollbarSlider.activeBackground': ref('fgFaint', 0.7),
+  // Same role and opacities as the two sibling families.
+  'notebookScrollbarSlider.background': translucent('fgSubtle', SLIDER.base),
+  'notebookScrollbarSlider.hoverBackground': translucent('fgSubtle', SLIDER.hover),
+  'notebookScrollbarSlider.activeBackground': translucent('fgSubtle', SLIDER.active),
 
   // Comments: resolved is a settled/good state, unresolved still needs attention
   'commentsView.resolvedIcon': ref('success'),
@@ -480,11 +512,16 @@ const overrides: Record<string, ColorRef | null> = {
   // leaving hover/active to the generic Hover/ActiveBackground rules
   // (bgSelect at 0.5/1.0) - a different role entirely, and one that happened
   // to render *darker* than the base state, so hovering visually dimmed the
-  // slider. Mirrors the sibling scrollbarSlider.* treatment above: same
-  // role, ascending alpha for background < hover < active.
-  'minimapSlider.background': ref('fgFaint', 0.3),
-  'minimapSlider.hoverBackground': ref('fgFaint', 0.5),
-  'minimapSlider.activeBackground': ref('fgFaint', 0.7),
+  // slider. Mirrors the sibling scrollbarSlider.* treatment above.
+  //
+  // Round 2 made all three translucent. This thumb marks the viewport over
+  // the minimap and, with the minimap enabled, over the overview ruler's
+  // change marks too - the one place in the editor where an opaque fill is
+  // unambiguously wrong, because the whole job of the key is to say "you are
+  // here" about content it must not erase.
+  'minimapSlider.background': translucent('fgSubtle', SLIDER.base),
+  'minimapSlider.hoverBackground': translucent('fgSubtle', SLIDER.hover),
+  'minimapSlider.activeBackground': translucent('fgSubtle', SLIDER.active),
 
   // Inlay hints: round 1 muted the base foreground but missed that
   // "parameter" and "type" hints are the two most common variants in

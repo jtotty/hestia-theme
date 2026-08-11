@@ -50,8 +50,32 @@ describe('the generated theme', () => {
 
   it('emits well-formed hex for every colour', () => {
     for (const [key, value] of Object.entries(theme.colors)) {
-      expect(value, key).toMatch(/^#[0-9a-f]{6}$/)
+      expect(value, key).toMatch(/^#[0-9a-f]{6}([0-9a-f]{2})?$/)
     }
+  })
+})
+
+// Every other key in the theme resolves transparency at build time, because
+// the surface underneath is known and an opaque colour is the more faithful
+// result. These nine paint over content - the overview ruler's change marks,
+// the minimap's rendered code - so an opaque value erases exactly the thing
+// the user is looking at. They must keep a real alpha channel.
+describe('the sliders stay translucent', () => {
+  const SLIDERS = ['scrollbarSlider', 'minimapSlider', 'notebookScrollbarSlider']
+  const STATES = ['background', 'hoverBackground', 'activeBackground']
+
+  it.each(SLIDERS.flatMap((s) => STATES.map((st) => `${s}.${st}`)))(
+    '%s carries an alpha channel',
+    (key) => {
+      expect(theme.colors[key], key).toMatch(/^#[0-9a-f]{6}[0-9a-f]{2}$/)
+    },
+  )
+
+  it.each(SLIDERS)('%s grows more opaque from rest through hover to active', (slider) => {
+    const alpha = (state: string): number =>
+      Number.parseInt((theme.colors[`${slider}.${state}`] as string).slice(7), 16)
+    expect(alpha('background')).toBeLessThan(alpha('hoverBackground'))
+    expect(alpha('hoverBackground')).toBeLessThan(alpha('activeBackground'))
   })
 })
 

@@ -36,10 +36,20 @@ export interface Tint {
  * `alpha` composites `role` over `on` (defaulting to `bg`) at build time.
  * `tint` instead takes only `role`'s hue, over `on`, and is mutually
  * exclusive with `alpha`.
+ * `opacity` emits `role` with a real alpha channel and composites nothing,
+ * and is mutually exclusive with both of the others.
+ *
+ * The three are not interchangeable. `alpha` and `tint` both resolve to an
+ * opaque colour, which is correct only where the surface underneath is known
+ * at build time - the overwhelming majority of keys, which paint on one
+ * named surface. `opacity` is for the few keys that paint over *content*:
+ * an opaque fill there hides whatever it covers, which is the whole reason
+ * the key is meant to be translucent.
  */
 export interface ColorRef {
   role: RoleName
   alpha?: number
   on?: RoleName
   tint?: Tint
+  opacity?: number
 }

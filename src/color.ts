@@ -41,9 +41,18 @@ function apply(m: Matrix, v: RGB): RGB {
 const toLinear = (c: number): number => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
 const toSrgb = (c: number): number => (c <= 0.0031308 ? c * 12.92 : 1.055 * c ** (1 / 2.4) - 0.055)
 
+/**
+ * The RGB channels of a colour, ignoring any alpha channel.
+ *
+ * `#rrggbbaa` is accepted so that the warmth gate and the luminance helpers
+ * can be applied to a translucent emitted colour. What they then measure is
+ * the source colour, not the composite - the composite depends on whatever
+ * VSCode paints underneath, which is not knowable at build time. That is the
+ * point of emitting real alpha for those few keys: see `withAlpha`.
+ */
 export function hexToRgb(hex: string): RGB {
   const h = hex.replace('#', '')
-  if (h.length !== 6) throw new Error(`Expected #rrggbb, got "${hex}"`)
+  if (h.length !== 6 && h.length !== 8) throw new Error(`Expected #rrggbb(aa), got "${hex}"`)
   return [0, 2, 4].map((i) => Number.parseInt(h.slice(i, i + 2), 16) / 255) as RGB
 }
 
@@ -114,6 +123,24 @@ export function mixOklch(a: string, b: string, t: number): string {
     c: A.c + (B.c - A.c) * t,
     h: A.h + (B.h - A.h) * t,
   })
+}
+
+/**
+ * Appends a real alpha channel, producing `#rrggbbaa`.
+ *
+ * The opposite of `blend`. `blend` resolves transparency at build time and
+ * emits an opaque colour, which is right for a decoration painted on a known
+ * surface and wrong for anything painted over content - an opaque fill hides
+ * what is underneath it. VSCode accepts `#rrggbbaa` for every workbench
+ * colour, so those keys can keep their transparency to runtime.
+ */
+export function withAlpha(hex: string, alpha: number): string {
+  if (alpha < 0 || alpha > 1) throw new Error(`Alpha must be within 0-1, got ${alpha}`)
+  if (hex.replace('#', '').length !== 6) throw new Error(`Expected #rrggbb, got "${hex}"`)
+  const byte = Math.round(alpha * 255)
+    .toString(16)
+    .padStart(2, '0')
+  return `${hex}${byte}`
 }
 
 export function blend(fg: string, bg: string, alpha: number): string {
