@@ -50,8 +50,32 @@ describe('the generated theme', () => {
 
   it('emits well-formed hex for every colour', () => {
     for (const [key, value] of Object.entries(theme.colors)) {
-      expect(value, key).toMatch(/^#[0-9a-f]{6}$/)
+      expect(value, key).toMatch(/^#[0-9a-f]{6}([0-9a-f]{2})?$/)
     }
+  })
+})
+
+// Every other key in the theme resolves transparency at build time, because
+// the surface underneath is known and an opaque colour is the more faithful
+// result. These nine paint over content - the overview ruler's change marks,
+// the minimap's rendered code - so an opaque value erases exactly the thing
+// the user is looking at. They must keep a real alpha channel.
+describe('the sliders stay translucent', () => {
+  const SLIDERS = ['scrollbarSlider', 'minimapSlider', 'notebookScrollbarSlider']
+  const STATES = ['background', 'hoverBackground', 'activeBackground']
+
+  it.each(SLIDERS.flatMap((s) => STATES.map((st) => `${s}.${st}`)))(
+    '%s carries an alpha channel',
+    (key) => {
+      expect(theme.colors[key], key).toMatch(/^#[0-9a-f]{6}[0-9a-f]{2}$/)
+    },
+  )
+
+  it.each(SLIDERS)('%s grows more opaque from rest through hover to active', (slider) => {
+    const alpha = (state: string): number =>
+      Number.parseInt((theme.colors[`${slider}.${state}`] as string).slice(7), 16)
+    expect(alpha('background')).toBeLessThan(alpha('hoverBackground'))
+    expect(alpha('hoverBackground')).toBeLessThan(alpha('activeBackground'))
   })
 })
 
@@ -236,7 +260,17 @@ describe('nothing is painted invisible', () => {
 })
 
 describe('related keys stay distinguishable from one another', () => {
-  it.each(['symbolIcon.', 'debugIcon.', 'editorOverviewRuler.'])(
+  it.each([
+    'symbolIcon.',
+    'debugIcon.',
+    'editorOverviewRuler.',
+    // Three families the mirror schema never listed. Left to the generic
+    // rules, all nine terminalSymbolIcon keys painted one neutral and the
+    // graph swimlanes were indistinguishable from one another.
+    'terminalSymbolIcon.',
+    'scmGraph.foreground',
+    'inlineEdit.gutterIndicator.',
+  ])(
     'does not collapse the %s family to a single colour',
     (prefix) => {
       const values = Object.entries(theme.colors)
@@ -264,6 +298,19 @@ describe('related keys stay distinguishable from one another', () => {
     // "....word.background" highlight of the changed words inside it.
     ['mergeEditor.change.word.background', 'mergeEditor.change.background'],
     ['mergeEditor.changeBase.word.background', 'mergeEditor.changeBase.background'],
+    // Inline edit is the same stacked pair under Cursor's own key names, and
+    // the two sides of it must not read alike either.
+    ['inlineEdit.modifiedChangedTextBackground', 'inlineEdit.modifiedChangedLineBackground'],
+    ['inlineEdit.originalChangedTextBackground', 'inlineEdit.originalChangedLineBackground'],
+    ['inlineEdit.modifiedBackground', 'inlineEdit.originalBackground'],
+    ['inlineEdit.tabWillAcceptModifiedBorder', 'inlineEdit.modifiedBorder'],
+    ['inlineEdit.tabWillAcceptOriginalBorder', 'inlineEdit.originalBorder'],
+    // Coverage: covered, uncovered and partially-covered are three verdicts,
+    // and a gutter mark has to differ from the line wash it accompanies.
+    ['testing.coveredBackground', 'testing.uncoveredBackground'],
+    ['testing.uncoveredBranchBackground', 'testing.uncoveredBackground'],
+    ['testing.coveredGutterBackground', 'testing.coveredBackground'],
+    ['testing.uncoveredGutterBackground', 'testing.uncoveredBackground'],
   ])('paints %s differently from %s', (a, b) => {
     expect(theme.colors[a]).toBeDefined()
     expect(theme.colors[b]).toBeDefined()

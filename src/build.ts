@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises'
-import { blend, hexToOklch, oklchToHex } from './color'
+import { blend, hexToOklch, oklchToHex, withAlpha } from './color'
 import { resolveRole } from './palette'
 import { colorKeys } from './schema'
 import { semanticRules } from './semantic'
@@ -24,6 +24,19 @@ export interface ThemeJson {
 
 function resolveRef(value: ColorRef, variant: Variant): string {
   const base = resolveRole(value.role, variant)
+  if (value.opacity !== undefined) {
+    if (value.alpha !== undefined || value.tint !== undefined) {
+      throw new Error(
+        `A ColorRef cannot set opacity alongside alpha or tint (role "${value.role}").`,
+      )
+    }
+    if (value.on !== undefined) {
+      throw new Error(
+        `A ColorRef with opacity composites nothing, so "on" is meaningless (role "${value.role}").`,
+      )
+    }
+    return withAlpha(base, value.opacity)
+  }
   if (value.tint !== undefined) {
     if (value.alpha !== undefined) {
       throw new Error(`A ColorRef cannot set both alpha and tint (role "${value.role}").`)

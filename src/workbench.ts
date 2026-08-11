@@ -23,6 +23,35 @@ const tint = (role: RoleName, lightness: number, chroma: number): ColorRef => ({
   tint: { lightness, chroma },
 })
 
+/**
+ * A colour that keeps its transparency to runtime, for the keys that paint
+ * over content rather than over a surface.
+ *
+ * `ref(role, alpha)` cannot serve these. It composites at build time against
+ * one nominated surface and emits an opaque colour, so wherever the key
+ * actually paints over something else - the overview ruler's diff and
+ * diagnostic marks, the minimap's rendered code - it covers it completely
+ * instead of veiling it. That is the whole defect the scrollbar and minimap
+ * thumbs had: they hid the red and green change marks they were sliding over.
+ */
+const translucent = (role: RoleName, opacity: number): ColorRef => ({ role, opacity })
+
+/**
+ * The scrollbar, minimap and notebook-scrollbar thumbs.
+ *
+ * `fgSubtle`, a light neutral, rather than the dark `fgFaint` these carried
+ * while they were opaque. A dark thumb over the overview ruler reads as a
+ * hole punched in the marks; a light one at low opacity reads as a lens laid
+ * over them, and the marks keep their hue through it.
+ *
+ * The base opacity is 0.1 because `fgSubtle` at 0.1 over the editor
+ * background lands within one step of the opaque `fgFaint` at 0.3 it
+ * replaces, so the thumb is exactly as findable as before on plain
+ * background while no longer occluding anything. Hover and active ascend
+ * from there.
+ */
+const SLIDER = { base: 0.1, hover: 0.18, active: 0.26 } as const
+
 /** Whole changed line or region: present, but never competing with the code. */
 const TINT_LINE = [0.04, 0.04] as const
 /**
@@ -221,16 +250,19 @@ const overrides: Record<string, ColorRef | null> = {
 
   // Scrollbar
   'scrollbar.shadow': ref('bgSunken', 0.5),
-  'scrollbarSlider.background': ref('fgFaint', 0.3),
-  'scrollbarSlider.hoverBackground': ref('fgFaint', 0.5),
-  'scrollbarSlider.activeBackground': ref('fgFaint', 0.7),
+  // Translucent, not composited: the editor's vertical scrollbar shares its
+  // column with the overview ruler, so an opaque thumb hides the diff and
+  // diagnostic marks in the stretch of file it covers. See SLIDER above.
+  'scrollbarSlider.background': translucent('fgSubtle', SLIDER.base),
+  'scrollbarSlider.hoverBackground': translucent('fgSubtle', SLIDER.hover),
+  'scrollbarSlider.activeBackground': translucent('fgSubtle', SLIDER.active),
   // The third slider family. Without these the base state fell through to the
   // generic Background rule and resolved to bgRaised - exactly
   // notebook.editorBackground, so the notebook's own scrollbar had no thumb.
-  // Same role and ascending alphas as the two sibling families above.
-  'notebookScrollbarSlider.background': ref('fgFaint', 0.3),
-  'notebookScrollbarSlider.hoverBackground': ref('fgFaint', 0.5),
-  'notebookScrollbarSlider.activeBackground': ref('fgFaint', 0.7),
+  // Same role and opacities as the two sibling families.
+  'notebookScrollbarSlider.background': translucent('fgSubtle', SLIDER.base),
+  'notebookScrollbarSlider.hoverBackground': translucent('fgSubtle', SLIDER.hover),
+  'notebookScrollbarSlider.activeBackground': translucent('fgSubtle', SLIDER.active),
 
   // Comments: resolved is a settled/good state, unresolved still needs attention
   'commentsView.resolvedIcon': ref('success'),
@@ -480,11 +512,16 @@ const overrides: Record<string, ColorRef | null> = {
   // leaving hover/active to the generic Hover/ActiveBackground rules
   // (bgSelect at 0.5/1.0) - a different role entirely, and one that happened
   // to render *darker* than the base state, so hovering visually dimmed the
-  // slider. Mirrors the sibling scrollbarSlider.* treatment above: same
-  // role, ascending alpha for background < hover < active.
-  'minimapSlider.background': ref('fgFaint', 0.3),
-  'minimapSlider.hoverBackground': ref('fgFaint', 0.5),
-  'minimapSlider.activeBackground': ref('fgFaint', 0.7),
+  // slider. Mirrors the sibling scrollbarSlider.* treatment above.
+  //
+  // Round 2 made all three translucent. This thumb marks the viewport over
+  // the minimap and, with the minimap enabled, over the overview ruler's
+  // change marks too - the one place in the editor where an opaque fill is
+  // unambiguously wrong, because the whole job of the key is to say "you are
+  // here" about content it must not erase.
+  'minimapSlider.background': translucent('fgSubtle', SLIDER.base),
+  'minimapSlider.hoverBackground': translucent('fgSubtle', SLIDER.hover),
+  'minimapSlider.activeBackground': translucent('fgSubtle', SLIDER.active),
 
   // Inlay hints: round 1 muted the base foreground but missed that
   // "parameter" and "type" hints are the two most common variants in
@@ -600,6 +637,196 @@ const overrides: Record<string, ColorRef | null> = {
   // sit at 0.8 (4.08:1).
   'mergeEditor.changeBase.background': ref('bgSelect', 0.35),
   'mergeEditor.changeBase.word.background': ref('bgSelect', 0.5),
+
+  // --- Round 4: keys the mirror schema never listed ---
+  //
+  // The vendored schema used to come from a third-party mirror that lags real
+  // VS Code. It was 138 keys short of what the editor actually registers, and
+  // every one of those was a key this theme never set, so the editor painted
+  // its own default there - pure white, light grey, cool blue. See
+  // scripts/vendor-schema.ts for how the list is now derived from the
+  // installed editor's own colour registry instead.
+  //
+  // Most of the 138 land correctly on the generic rules below. These are the
+  // ones that do not, either because they end in no suffix any rule matches
+  // (which fails the build outright) or because the rule that claims them
+  // gets the semantics wrong.
+
+  // The `chart.*` family, new and distinct from the older plural `charts.*`
+  // block above. Upstream's defaults name the roles clearly: chart.line is a
+  // data series (a blue), while axis and guide are structural rules drawn at
+  // 40% and 20% of a grey. Keeping that two-step gap matters more than the
+  // exact values - an axis that reads as strongly as its own gridlines makes
+  // a chart harder to scan, not easier.
+  'chart.line': ref('accent'),
+  'chart.axis': ref('fgFaint'),
+  'chart.guide': ref('fgFaint', 0.4),
+
+  // Source-control graph swimlanes. Five concurrent branch lines, so five
+  // hues that must stay separable from one another - the same problem the
+  // bracket-pair levels solve, and given the same rotation for the same
+  // reason. Upstream picks five deliberately unlike colours here (amber,
+  // magenta, brown, teal, violet) rather than five shades of one.
+  'scmGraph.foreground1': ref('accent'),
+  'scmGraph.foreground2': ref('success'),
+  'scmGraph.foreground3': ref('warning'),
+  'scmGraph.foreground4': ref('info'),
+  'scmGraph.foreground5': ref('modified'),
+
+  // Ref badges on graph nodes. Three distinct hues because the whole point of
+  // the badge is telling at a glance which kind of ref you are looking at:
+  // the branch you are on, its remote counterpart, and the base branch the
+  // history is measured against. These end in "Color", a suffix no rule
+  // matches, so without these three the build fails.
+  'scmGraph.historyItemRefColor': ref('accent'),
+  'scmGraph.historyItemRemoteRefColor': ref('info'),
+  'scmGraph.historyItemBaseRefColor': ref('warning'),
+
+  // Badge text painted the same colour as its own badge. Both of these have a
+  // saturated fill from the error/warning name rules, and their foreground
+  // then took the same rule, so the count inside the badge was invisible.
+  // Dark text on a saturated fill, as everywhere else in this theme.
+  'activityErrorBadge.foreground': ref('bg'),
+  'activityWarningBadge.foreground': ref('bg'),
+  'testing.message.error.badgeBackground': ref('error'),
+  'testing.message.error.badgeBorder': ref('errorBright'),
+  'testing.message.error.badgeForeground': ref('bg'),
+
+  // The same defect in the panel-title badge, from the other direction: the
+  // chrome-surface rule claimed "panelTitleBadge.background" as if
+  // "TitleBadge" were a panel surface name, so the badge painted the panel
+  // colour. Given the plain badge.* treatment.
+  'panelTitleBadge.background': ref('accent'),
+  'panelTitleBadge.foreground': ref('bg'),
+
+  // The top-positioned activity bar is the same UI as the side-positioned
+  // one, so its active marker takes the same explicit accent. Left to the
+  // rules it resolved to a half-strength composite instead, which would have
+  // made the two orientations of one control look like different controls.
+  'activityBarTop.activeBorder': ref('accent'),
+
+  // VSCode recolours the whole command centre during a debug session, exactly
+  // as it does the status bar. This resolved to commandCenter.background, so
+  // there was no recolouring. Matched to statusBar.debuggingBackground above.
+  'commandCenter.debuggingBackground': ref('accent'),
+
+  // The IME composition underline, which marks text you are mid-way through
+  // composing. The border rule put it at bgSunken, i.e. invisible, which is
+  // the one state where you most need to see the extent of what you typed.
+  'editor.compositionBorder': ref('accent'),
+
+  // Drop targets. `list.dropBetweenBackground` is the insertion line drawn
+  // between two rows, and at bgRaised it did not exist. The sibling
+  // *.dropBackground keys are already a visible fill, so the line that says
+  // *where* the drop lands should be at least as legible.
+  'list.dropBetweenBackground': ref('accent'),
+
+  // Multi-cursor carets. Both foregrounds resolved to fgSubtle - the same
+  // neutral as body text - so every secondary caret looked like a character
+  // rather than a cursor. The caret role exists for exactly this. Secondary
+  // carets recede so the primary one stays findable among them, and the
+  // backgrounds are the glyph *under* a block caret, which is the editor
+  // background by the same logic as editorCursor.background.
+  'editorMultiCursor.primary.foreground': ref('cursor'),
+  'editorMultiCursor.primary.background': ref('bg'),
+  'editorMultiCursor.secondary.foreground': ref('cursor', 0.7),
+  'editorMultiCursor.secondary.background': ref('bg'),
+
+  // A reply box is an input, not editor canvas. The editor-adjacent surface
+  // rule matched it on the "editor" prefix and painted it editor.background,
+  // so the field had no edge against the widget around it.
+  'editorCommentsWidget.replyInputBackground': ref('bgOverlay'),
+
+  // Text that is not really there. All three are placeholders or hints, and
+  // all three resolved to a neutral bright enough to be mistaken for content
+  // - which for a placeholder is the whole failure mode. The fold placeholder
+  // stays a step brighter than the terminal hint because it stands in for
+  // code you have collapsed and must remain clickable.
+  'editor.placeholder.foreground': ref('fgMuted'),
+  'editor.foldPlaceholderForeground': ref('fgMuted'),
+  'terminal.initialHintForeground': ref('fgFaint'),
+
+  // A watch-panel type name, grouped with the Type scope in scopes.ts and the
+  // symbolIcon type family above so a type reads the same wherever it appears.
+  // Its debugTokenExpression.* siblings are still one flat neutral, which is
+  // the same defect - but they predate the schema refresh, so they are not
+  // this change's to make.
+  'debugTokenExpression.type': ref('infoBright'),
+
+  // Inline edit (Cursor Tab and VSCode's next-edit suggestion). The name rules
+  // mapped every "...modified..." key here onto the `modified` role at full
+  // saturation, including four *backgrounds* - a solid salmon fill with code
+  // on top of it. That is a false friend: "original" and "modified" name the
+  // two sides of a diff, not this palette's modified role. Treated as what it
+  // is, a diff, using the same tint-not-alpha machinery and the same
+  // line/word split as diffEditor.* (see the Tint docs in types.ts).
+  'inlineEdit.originalBackground': tint('error', ...TINT_LINE),
+  'inlineEdit.originalChangedLineBackground': tint('error', ...TINT_LINE),
+  'inlineEdit.originalChangedTextBackground': tint('error', ...TINT_WORD),
+  'inlineEdit.originalBorder': ref('error', 0.6),
+  'inlineEdit.modifiedBackground': tint('success', ...TINT_LINE),
+  'inlineEdit.modifiedChangedLineBackground': tint('success', ...TINT_LINE),
+  'inlineEdit.modifiedChangedTextBackground': tint('success', ...TINT_WORD),
+  'inlineEdit.modifiedBorder': ref('success', 0.6),
+  // The armed state: Tab will accept this suggestion. Full strength, because
+  // its whole job is to be a step louder than the resting border above.
+  'inlineEdit.tabWillAcceptOriginalBorder': ref('error'),
+  'inlineEdit.tabWillAcceptModifiedBorder': ref('success'),
+  // The gutter pill that announces a suggestion. Three states that must be
+  // told apart at a glance: waiting (neutral overlay), active (accent fill,
+  // dark text), accepted (success fill, dark text). Left to the rules the
+  // successful trio painted fill, border and text the same green.
+  'inlineEdit.gutterIndicator.background': ref('bgOverlay'),
+  'inlineEdit.gutterIndicator.secondaryBackground': ref('bgSelect'),
+  'inlineEdit.gutterIndicator.secondaryBorder': ref('bgSunken'),
+  'inlineEdit.gutterIndicator.secondaryForeground': ref('fgMuted'),
+  'inlineEdit.gutterIndicator.primaryBackground': ref('accent'),
+  'inlineEdit.gutterIndicator.primaryBorder': ref('accentBright'),
+  'inlineEdit.gutterIndicator.primaryForeground': ref('bg'),
+  'inlineEdit.gutterIndicator.successfulBackground': ref('success'),
+  'inlineEdit.gutterIndicator.successfulBorder': ref('successBright'),
+  'inlineEdit.gutterIndicator.successfulForeground': ref('bg'),
+
+  // Test coverage. Every one of these resolved to a chrome surface or a
+  // border neutral, so running coverage highlighted nothing at all. They
+  // paint over code, so they are tints rather than alpha composites, at the
+  // same strengths the diff bands use. A branch that exists but was never
+  // taken is a weaker signal than a line that never ran, so it gets warning
+  // rather than error.
+  'testing.coveredBackground': tint('success', ...TINT_LINE),
+  'testing.coveredGutterBackground': tint('success', ...TINT_MARGIN),
+  'testing.coveredBorder': tint('success', ...TINT_EDGE),
+  'testing.uncoveredBackground': tint('error', ...TINT_LINE),
+  'testing.uncoveredGutterBackground': tint('error', ...TINT_MARGIN),
+  'testing.uncoveredBorder': tint('error', ...TINT_EDGE),
+  'testing.uncoveredBranchBackground': tint('warning', ...TINT_LINE),
+
+  // "Retired" means a result left over from a previous run, so each of these
+  // should read as its own live icon, faded. They resolved to a flat neutral
+  // instead - except errored, which resolved to full error and so looked
+  // exactly like a fresh failure.
+  'testing.iconErrored.retired': ref('error', 0.5),
+  'testing.iconFailed.retired': ref('error', 0.5),
+  'testing.iconPassed.retired': ref('success', 0.5),
+  'testing.iconQueued.retired': ref('info', 0.5),
+  'testing.iconSkipped.retired': ref('fgFaint', 0.5),
+  'testing.iconUnset.retired': ref('fgMuted', 0.5),
+
+  // The terminal suggest widget's symbol icons - nine keys that all resolved
+  // to one neutral, making the completion list monochrome. Grouped to agree
+  // with the symbolIcon.* families above so a method in the terminal reads
+  // like a method in the editor: callables warning-bright, types/aliases
+  // info-bright, values modified-bright, flags and options accent, plain
+  // names and paths the body neutral, and a ghosted suggestion muted.
+  'terminalSymbolIcon.methodForeground': ref('warningBright'),
+  'terminalSymbolIcon.aliasForeground': ref('infoBright'),
+  'terminalSymbolIcon.optionValueForeground': ref('modifiedBright'),
+  'terminalSymbolIcon.flagForeground': ref('accent'),
+  'terminalSymbolIcon.optionForeground': ref('accent'),
+  'terminalSymbolIcon.folderForeground': ref('info'),
+  'terminalSymbolIcon.fileForeground': ref('fg'),
+  'terminalSymbolIcon.argumentForeground': ref('fg'),
+  'terminalSymbolIcon.inlineSuggestionForeground': ref('fgMuted'),
 }
 
 /** Ordered fallback rules. First match wins. Later entries are broader. */
@@ -835,6 +1062,16 @@ const rules: ReadonlyArray<readonly [RegExp, ColorRef | null]> = [
   // Each was claimed first either by an exact override or by a broader rule
   // above it, so none of them ever produced a colour. See the tree indent
   // guide, charts and gitDecoration override comments for what replaced them.
+  // Drag-and-drop targets, above the generic border rule that used to claim
+  // them and paint them bgSunken. A drop indicator is the one border in the
+  // workbench that exists purely to be noticed: it appears only while you are
+  // dragging, and it is the only thing telling you where the thing will land.
+  // The sibling *.dropBackground keys are already a visible fill, so the
+  // indicator line was the odd one out. This also reaches the two pre-existing
+  // keys of the family, activityBar.dropBorder and panel.dropBorder, which had
+  // the same defect.
+  [/[Dd]rop(AndDrop)?Border$/, ref('accent')],
+
   [/[Bb]order([A-Z][a-z]+)?$/, ref('bgSunken')],
   [/[Ss]hadow$/, ref('bgSunken', 0.5)],
   [/[Hh]ighlight$/, ref('accent', 0.2)],
