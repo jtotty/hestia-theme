@@ -194,12 +194,54 @@ export const styleRefs: Record<string, ColorRef | null> = {
   // surface. That is what separates it from the bar around it.
   'tab.active_background': ref('bg'),
 
-  // Borders. Recessive rather than raised: a line darker than the surface
-  // separates without adding another bright edge, which is the same call the
-  // VSCode theme's generic Border rule makes.
-  border: ref('bgSunken'),
-  'border.variant': ref('bgSunken', 0.6, 'bgRaised'),
-  'border.disabled': ref('bgSunken', 0.6, 'bgRaised'),
+  // Borders. Zed's schema splits these two ways and the split is load-bearing:
+  // `border` is "used for most borders, is usually a high contrast color",
+  // `border.variant` is for "deemphasized borders, like a visual divider
+  // between two sections". Only the second is a divider between surfaces that
+  // already differ, so only the second can be recessive. The VSCode theme
+  // makes no such split: workbench.ts ends its rule list with a catch-all
+  // `/[Bb]order([A-Z][a-z]+)?$/` painting bgSunken, so element outlines get
+  // the recessive treatment too - input.border, dropdown.border, menu.border,
+  // checkbox.border, editorWidget.border, keybindingLabel.border,
+  // notebook.cellBorderColor and settings.textInputBorder all resolve to
+  // bgSunken, which reads 1.04:1 against the editor canvas and is on the wrong
+  // side of it. Those are the same case this change corrects here, and the
+  // defect is still present in the VSCode theme; fixing it there is
+  // deliberately out of scope.
+  //
+  // `border` is the outline Zed draws around elements sitting *on* a surface,
+  // the multibuffer file header among them (editor/src/element/header.rs draws
+  // it as border_1 in this colour over `editor.subheader.background`). A line
+  // darker than the canvas cannot outline anything there: at bgSunken it read
+  // 1.04:1 against the editor background and on the wrong side of it, so a
+  // column of collapsed file headers ran together. fgFaint at 0.6 over the
+  // canvas lands at 1.62:1, matching the 1.60:1 One Dark gets from its own
+  // `border`, and stays inside the warm ramp rather than reaching for a hue.
+  // That does couple the chrome to the terminal palette: fgFaint is ansi[8]
+  // (palette.ts:37), and the ANSI array is byte-identical to the Ghostty theme
+  // (palette.ts:4), so a resync of it now moves every border in the Zed UI,
+  // not only the terminal colours.
+  border: ref('fgFaint', 0.6),
+  // The deemphasized tier. It is still a line someone has to see: it is the
+  // rule under the editor toolbar (workspace/src/toolbar.rs draws it as
+  // border_b_1 in this colour), which is the only thing separating the cmd+F
+  // search bar from the code beneath it. Composited over bgRaised it resolved
+  // to within one step of the editor background - 1.00:1 against the toolbar
+  // it was meant to close off - so the bar and the buffer ran together. At
+  // fgFaint 0.3 over the canvas it reads 1.24:1, matching One Dark's 1.26:1,
+  // and stays a clear step below `border` so Zed's two tiers remain two tiers.
+  'border.variant': ref('fgFaint', 0.3),
+  // The faintest tier, and the one border with nothing to separate: a disabled
+  // control should read as one. It was reading as nothing at all, though -
+  // bgSunken over bgRaised sat 1.01:1 from `element.disabled`, the fill it is
+  // meant to outline, and darker than the canvas, so the control lost its
+  // shape rather than only its emphasis. fgFaint at 0.15 reads 1.10:1 both
+  // against the canvas and against that fill, and stays clearly below
+  // `border.variant`'s 1.24:1, so the ordering border > border.variant >
+  // border.disabled holds. 0.15 is exactly half of `border.variant`'s 0.3, and
+  // dropping the `on: 'bgRaised'` puts all three tiers on the same surface
+  // assumption - composited over `bg`, the default.
+  'border.disabled': ref('fgFaint', 0.15),
   'border.focused': ref('accent', 0.6),
   'border.selected': ref('accent', 0.6),
   'border.transparent': NONE,
@@ -250,7 +292,21 @@ export const styleRefs: Record<string, ColorRef | null> = {
   'editor.background': ref('bg'),
   'editor.foreground': ref('fg'),
   'editor.gutter.background': ref('bg'),
-  'editor.subheader.background': ref('bgRaised'),
+  // The multibuffer file header - the bar naming each file in a project diff
+  // or search result. It is a chip floating over the canvas rather than a
+  // panel beside it, so it takes the same surface as everything else that
+  // floats. bgRaised put it 1.05:1 from the editor background, which is below
+  // the point where an edgeless bar is a bar at all. bgOverlay reads 1.18:1,
+  // which is the step the fix was validated at.
+  //
+  // Sharing that role with `elevated_surface.background`,
+  // `panel.overlay_background` and `terminal.ansi.black` is deliberate rather
+  // than incidental, because the obvious decoupled alternative fails: fgFaint
+  // composited over `bg` only reaches this step at alpha ~0.25, which lands on
+  // the exact value of `element.hover`, so the resting header would be
+  // indistinguishable from its own hover state. The coupling is named here
+  // so a later change to the popover surface does not move the header silently.
+  'editor.subheader.background': ref('bgOverlay'),
   'editor.active_line.background': ref('bgSelect', 0.35),
   'editor.highlighted_line.background': ref('accent', 0.12),
   'editor.debugger_active_line.background': ref('warning', 0.25),

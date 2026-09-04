@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildTheme, buildZedTheme } from '../src/build'
 import type { ZedHighlight, ZedPlayer } from '../src/build'
-import { contrastRatio, isWarm } from '../src/color'
+import { contrastRatio, hexToOklch, isWarm } from '../src/color'
 import { resolveRole } from '../src/palette'
 import { styleRefs } from '../src/zed'
 import { bundledCaptures, styleKeys } from '../src/zed-schema'
@@ -210,6 +210,108 @@ describe('surface hierarchy', () => {
   it('shows the active tab as a window onto the editor', () => {
     expect(style['tab.active_background']).toBe(bg)
     expect(style['tab.inactive_background']).not.toBe(bg)
+  })
+})
+
+/*
+ * The bar naming each file in a project diff or a multi-file search result,
+ * drawn as a filled, outlined chip on the editor canvas. The mechanism (which
+ * source file, which Rust struct, which colour draws which edge) is explained
+ * once, canonically, above `border` in src/zed.ts - this only records what is
+ * being measured and why these particular floors.
+ *
+ * The thresholds are One Dark's own measurements against its editor
+ * background, because that theme is the reference for what Zed considers a
+ * legible header: fill 1.12:1, outline 1.60:1, outline against fill 1.43:1.
+ * A threshold set at the emitted value is a snapshot rather than a floor, so
+ * each is relaxed a little from One Dark's number: 1.43 to 1.35, and 1.26
+ * (used by the toolbar block below) to 1.20. The outline's own 1.6 floor
+ * follows the same rule: this palette emits 1.6191, and 1.6 left only 1.2%
+ * of headroom, so it is lowered to 1.55.
+ * A previous mapping cleared none of them - the fill sat at 1.05:1 and the
+ * outline was darker than the canvas it was drawn on - and the bars ran
+ * together.
+ */
+describe('the multibuffer file header reads as a distinct row', () => {
+  const fill = style['editor.subheader.background']!
+  const outline = style.border!
+
+  it('separates the header fill from the editor canvas', () => {
+    expect(contrastRatio(fill, bg)).toBeGreaterThanOrEqual(1.12)
+  })
+
+  it('draws the outline lighter than the canvas, not darker', () => {
+    // Direction matters as much as magnitude: a line below the canvas in
+    // lightness reads as a seam in the background rather than as an edge
+    // around the chip, which is how the fill's own weak contrast went unnoticed.
+    // This only holds for a dark theme - a light variant needs the opposite
+    // direction - and must be made variant-aware once one exists; palette.ts
+    // currently throws for 'light', so there is nothing to branch on yet.
+    expect(hexToOklch(outline).l).toBeGreaterThan(hexToOklch(bg).l)
+    expect(contrastRatio(outline, bg)).toBeGreaterThanOrEqual(1.55)
+  })
+
+  it('keeps the outline visible against the fill it surrounds', () => {
+    expect(contrastRatio(outline, fill)).toBeGreaterThanOrEqual(1.35)
+  })
+
+  // Both tiers are drawn on two surfaces: the editor canvas, tested here and
+  // in the toolbar block, and the chrome surface (style.background). One
+  // build-time composite cannot satisfy both equally, because the two
+  // backgrounds differ. On chrome the outline reads 1.54:1, below the floor
+  // its canvas test enforces, so the chrome floor sits lower on purpose
+  // rather than by oversight.
+  it('stays visible against the chrome surface too', () => {
+    expect(contrastRatio(outline, style.background!)).toBeGreaterThanOrEqual(1.45)
+  })
+})
+
+/*
+ * The rule under the editor toolbar, which closes off the cmd+F search bar
+ * from the buffer below it. The source mechanism is explained once, above
+ * `border.variant` in src/zed.ts - a previous mapping resolved this rule to
+ * 1.00:1 against the surface on either side of it.
+ *
+ * The floor is 1.2 rather than One Dark's own 1.26:1, for the same
+ * headroom-over-snapshot reason given above. The search input needs no test
+ * of its own: it is drawn with no fill at all, outlined in `border`, and so
+ * is covered by the header outline guards above.
+ */
+describe('the editor toolbar is closed off from the buffer', () => {
+  it('gives the toolbar the editor surface, as Zed expects', () => {
+    expect(style['toolbar.background']).toBe(bg)
+  })
+
+  it('separates the toolbar from the buffer with a visible rule', () => {
+    expect(contrastRatio(style['border.variant']!, bg)).toBeGreaterThanOrEqual(1.2)
+  })
+
+  // `border.variant` is the deemphasized tier, so it is allowed to be quieter
+  // than `border` - but only if it is actually a different colour, or Zed's
+  // two-way split has been collapsed back into one. This is the tier the
+  // toolbar rule above uses, so it belongs here rather than in the header block.
+  it('keeps the deemphasized divider distinct from the outline', () => {
+    const variant = contrastRatio(style['border.variant']!, bg)
+    expect(variant).toBeLessThan(contrastRatio(style.border!, bg))
+    // The same two-surface split as the outline: 1.18:1 on chrome, so the
+    // floor there is lower than the 1.2 the canvas test enforces.
+    expect(contrastRatio(style['border.variant']!, style.background!)).toBeGreaterThanOrEqual(1.12)
+  })
+
+  // `border.disabled` is the quietest of the three tiers by design, but it is
+  // still a border. The previous value read 1.01:1 against its own fill, which
+  // is not visible at all, and a bare "greater than 1.0" would have passed it.
+  // So the floors are stated against both surfaces it meets: the canvas, and
+  // `element.disabled`, which is the fill it actually outlines.
+  it('keeps the three border tiers ordered, and the quietest one visible', () => {
+    const border = contrastRatio(style.border!, bg)
+    const variant = contrastRatio(style['border.variant']!, bg)
+    const disabled = contrastRatio(style['border.disabled']!, bg)
+    const onFill = contrastRatio(style['border.disabled']!, style['element.disabled']!)
+    expect(border).toBeGreaterThan(variant)
+    expect(variant).toBeGreaterThan(disabled)
+    expect(disabled).toBeGreaterThanOrEqual(1.05)
+    expect(onFill).toBeGreaterThanOrEqual(1.05)
   })
 })
 
