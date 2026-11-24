@@ -466,6 +466,19 @@ describe('semantic highlighting', () => {
   })
 })
 
+describe('symbol icons', () => {
+  // An icon takes the role of the same symbol in the code, so these stay in
+  // step with the Neovim Hestia colourscheme's completion kinds.
+  it.each([
+    ['operator', 'fgSubtle'],
+    ['constructor', 'infoBright'],
+    ['text', 'fgSubtle'],
+    ['folder', 'accent'],
+  ] as const)('paints the %s icon as %s', (kind, role) => {
+    expect(theme.colors[`symbolIcon.${kind}Foreground`]).toBe(resolveRole(role, 'dark'))
+  })
+})
+
 describe('legibility', () => {
   const bg = () => theme.colors['editor.background']!
 

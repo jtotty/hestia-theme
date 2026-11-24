@@ -1041,18 +1041,21 @@ const rules: ReadonlyArray<readonly [RegExp, ColorRef | null]> = [
   // same symbol in the code carry the same hue: types are infoBright (the
   // Type rule), callables warningBright (Function), literals modifiedBright
   // (Constant), strings success (String), names fg (Variable), and keywords
-  // accent (Keyword). Anchored on the full suffix so "enumerator" cannot
-  // swallow "enumeratorMember" and "key" cannot swallow "keyword".
-  // The remainder - array, colour, file, folder, unit, reference, snippet -
-  // carry no syntax meaning and are left to the generic foreground rule.
+  // accent (Keyword). Constructor sits with the types, since the name it
+  // inserts is a class. Folder is accent, to match the Neovim Directory
+  // role. Anchored on the full suffix so "enumerator" cannot swallow
+  // "enumeratorMember" and "key" cannot swallow "keyword".
+  // The remainder - operator (neutral, as in scopes.ts and semantic.ts),
+  // text (plain words), array, colour, file, unit, reference, snippet -
+  // falls to the generic fgSubtle foreground rule.
   [
-    /^symbolIcon\.(class|interface|struct|enumerator|typeParameter|namespace|module|package|object)Foreground$/,
+    /^symbolIcon\.(class|interface|struct|enumerator|typeParameter|namespace|module|package|object|constructor)Foreground$/,
     ref('infoBright'),
   ],
-  [/^symbolIcon\.(function|method|constructor|event)Foreground$/, ref('warningBright')],
+  [/^symbolIcon\.(function|method|event)Foreground$/, ref('warningBright')],
   [/^symbolIcon\.(constant|enumeratorMember|number|boolean|null)Foreground$/, ref('modifiedBright')],
-  [/^symbolIcon\.(keyword|operator)Foreground$/, ref('accent')],
-  [/^symbolIcon\.(string|text)Foreground$/, ref('success')],
+  [/^symbolIcon\.(keyword|folder)Foreground$/, ref('accent')],
+  [/^symbolIcon\.stringForeground$/, ref('success')],
   [/^symbolIcon\.(variable|field|property|key)Foreground$/, ref('fg')],
 
   // Generic families, broadest last.
