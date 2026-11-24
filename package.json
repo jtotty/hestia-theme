@@ -25,6 +25,8 @@
     "lint:palette": "tsx scripts/check-palette-isolation.ts",
     "typecheck": "tsc --noEmit",
     "vendor-schema": "tsx scripts/vendor-schema.ts",
+    "vendor-zed-schema": "tsx scripts/vendor-zed-schema.ts",
+    "install:zed": "npm run build && mkdir -p \"$HOME/.config/zed/themes\" && cp themes/hestia-zed.json \"$HOME/.config/zed/themes/hestia.json\"",
     "vscode:prepublish": "npm run build",
     "package": "vsce package --no-dependencies"
   },

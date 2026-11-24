@@ -2,6 +2,7 @@ src/
 test/
 scripts/
 schema/
+themes/hestia-zed*.json
 docs/
 .superpowers/
 .github/
